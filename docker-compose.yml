@@ -5,7 +5,8 @@ services:
       context: .
     container_name: ubuntu-vnc
     environment:
-      VNC_PW: 'password'
+      PASSWORD: 'password'
       VNC_RESOLUTION: '1440x900'
     ports:
+      - "2222:22"
       - "5901:5901"

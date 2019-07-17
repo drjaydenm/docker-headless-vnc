@@ -6,10 +6,11 @@ ENV VNC_PORT=5901 \
     TERM=xterm \
     DEBIAN_FRONTEND=noninteractive \
     HOME=/home/user \
-    PATH=/opt/TurboVNC/bin:$PATH
+    PATH=/opt/TurboVNC/bin:$PATH \
+    SSH_PORT=22
 
 EXPOSE $VNC_PORT
-WORKDIR $HOME
+EXPOSE $SSH_PORT
 
 # Install shared utils
 RUN apt-get update
@@ -18,19 +19,21 @@ RUN apt-get install -y --no-install-recommends \
         ca-certificates \
         locales \
         net-tools \
+        sudo \
         supervisor \
-        wget
+        wget \
+        openssh-server
 
 # Install XFCE and terminal
 RUN apt-get install -y --no-install-recommends \
         dbus-x11 \
         libexo-1-0 \
+        x11-apps \
         x11-xserver-utils \
         xauth \
         xfce4 \
         xfce4-terminal \
-        xterm && \
-    touch ~/.Xauthority
+        xterm
 ENV TVNC_WM=xfce4-session
 
 # Install TurboVNC
@@ -38,13 +41,14 @@ ENV TVNC_VERSION=2.2.2
 RUN export TVNC_DOWNLOAD_FILE="turbovnc_${TVNC_VERSION}_amd64.deb" && \
     wget -q -O $TVNC_DOWNLOAD_FILE "https://sourceforge.net/projects/turbovnc/files/2.2.2/${TVNC_DOWNLOAD_FILE}/download" && \
     dpkg -i $TVNC_DOWNLOAD_FILE && \
-    rm -f $TVNC_DOWNLOAD_FILE && \
-    mkdir "$HOME/.vnc"
+    rm -f $TVNC_DOWNLOAD_FILE
 
-# Configure X server
-RUN xset -dpms & \
-    xset s noblank & \
-    xset s off &
+# Configure SSH server
+RUN mkdir -p /var/run/sshd
+RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config && \
+    sed -ri 's/^#AllowTcpForwarding\s+.*/AllowTcpForwarding yes/g' /etc/ssh/sshd_config && \
+    sed -ri 's/^#X11Forwarding\s+.*/X11Forwarding yes/g' /etc/ssh/sshd_config && \
+    sed -ri 's/^#X11UseLocalhost\s+.*/X11UseLocalhost no/g' /etc/ssh/sshd_config
 
 # Install Firefox
 ENV FF_VERSION=68.0b14
@@ -67,15 +71,29 @@ RUN export ST_DOWNLOAD_FILE="sublime_text_3_build_${ST_VERSION}_x64.tar.bz2" && 
     rm -f $ST_DOWNLOAD_FILE && \
     ln -s "$ST_INSTALL_DIR/sublime_text" /usr/bin/sublime
 
-# Install extras
-#RUN apt-get install -y --no-install-recommends \
-#        ttf-mscorefonts-installer
+# Install extra common fonts
+RUN apt-get install -y --no-install-recommends \
+        cabextract \
+        xfonts-utils && \
+    wget http://ftp.us.debian.org/debian/pool/contrib/m/msttcorefonts/ttf-mscorefonts-installer_3.7_all.deb && \
+	dpkg -i ttf-mscorefonts-installer_3.7_all.deb
 
-COPY home/ /home/user/
-RUN find /home/user/ -name '*.desktop' -exec chmod $verbose a+x {} +
+# Setup another user
+RUN useradd -ms /bin/bash user && \
+    adduser user sudo && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+USER user
+WORKDIR $HOME
 
+# Configure X server
+RUN touch ~/.Xauthority && \
+    mkdir ~/.vnc
+
+COPY home/ $HOME/
+
+# Copy in the init script
 COPY start.sh /startup/start.sh
-RUN chmod +x /startup/start.sh
+RUN sudo chmod +x /startup/start.sh
 
 ENTRYPOINT [ "/startup/start.sh" ]
 CMD [ "--wait" ]
