@@ -2,9 +2,21 @@
 
 This is a workstation hosted inside a docker container that can be reliably built up to a known working state which includes all the tools I use by default.
 
+To start using this image, either use it directly from the docker command line
+
+```bash
+docker run -it drjaydenm/docker-headless-vnc
+```
+
+or use it as the base of your own image to customize it
+
+```dockerfile
+FROM drjaydenm/docker-headless-vnc:latest
+```
+
 ## Container Setup
 
-All docker commands are available as VS Code tasks for ease of use whilst editing/updating the image.
+All docker commands are available in this repository as VS Code tasks for ease of use whilst editing/updating the image.
 
 ### Building
 
@@ -22,7 +34,7 @@ The password is stored in the docker-compose.yml file by default, however you ca
 
 `docker compose down`
 
-## Using It
+## Connecting to it
 
 ### X11 Forwarding over SSH
 
@@ -50,7 +62,7 @@ There is also a VNC server setup and exposed on port 5901 by default. Connect to
 
 ## Getting access to your data
 
-To get access to your host data from the container, you can setup volume mounts in the `docker-compose.yml` file.
+To get access to your host data from the container, you can setup volume mounts in the `docker-compose.yml` file. An example file is in this repository.
 
 ## Customizing
 
