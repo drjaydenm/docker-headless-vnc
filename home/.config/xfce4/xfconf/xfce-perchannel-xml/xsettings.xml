@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <channel name="xsettings" version="1.0">
   <property name="Net" type="empty">
-    <property name="ThemeName" type="empty"/>
-    <property name="IconThemeName" type="empty"/>
+    <property name="ThemeName" type="string" value="FlatTheme"/>
+    <property name="IconThemeName" type="string" value="FlatTheme"/>
     <property name="DoubleClickTime" type="empty"/>
     <property name="DoubleClickDistance" type="empty"/>
     <property name="DndDragThreshold" type="empty"/>
@@ -13,7 +14,7 @@
     <property name="EnableInputFeedbackSounds" type="empty"/>
   </property>
   <property name="Xft" type="empty">
-    <property name="DPI" type="int" value="-1"/>
+    <property name="DPI" type="empty"/>
     <property name="Antialias" type="empty"/>
     <property name="Hinting" type="empty"/>
     <property name="HintStyle" type="empty"/>
@@ -23,6 +24,7 @@
     <property name="CanChangeAccels" type="empty"/>
     <property name="ColorPalette" type="empty"/>
     <property name="FontName" type="empty"/>
+    <property name="MonospaceFontName" type="empty"/>
     <property name="IconSizes" type="empty"/>
     <property name="KeyThemeName" type="empty"/>
     <property name="ToolbarStyle" type="empty"/>
@@ -34,7 +36,7 @@
     <property name="CursorThemeSize" type="empty"/>
     <property name="DecorationLayout" type="empty"/>
   </property>
-  <property name="Xfce" type="empty">
-    <property name="LastCustomDPI" type="int" value="96"/>
+  <property name="Gdk" type="empty">
+    <property name="WindowScalingFactor" type="empty"/>
   </property>
 </channel>

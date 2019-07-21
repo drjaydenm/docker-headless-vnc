@@ -67,3 +67,11 @@ To get access to your host data from the container, you can setup volume mounts 
 ## Customizing
 
 TBC
+
+## Credit
+
+Thanks to Daniel Ruiz de Alegría for his amazing work on the Flat Remix GTK theme and icon packs:
+
+* https://drasite.com/
+* https://github.com/daniruiz/flat-remix
+* https://github.com/daniruiz/flat-remix-gtk
