@@ -7,6 +7,7 @@ echo "user:$PASSWORD" | sudo chpasswd
 echo "$PASSWORD" | vncpasswd -f >> $PASSWD_PATH && chmod 600 $PASSWD_PATH
 
 # Apply permissions
+sudo chown user:user -R $HOME/
 sudo find $HOME/ -name '*.desktop' -exec chmod $verbose a+x {} +
 
 # Startup the SSH server
